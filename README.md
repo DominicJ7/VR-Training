@@ -5,7 +5,7 @@ As this repository is part of an academic research paper contributions are not o
 Overview
 The code displays a 3D scene that contains a few 3D models, including a truck in two states (opened and closed), a bottle of water and an avocado. The scene also includes a plane (the base) and a sky element.
 The truck, the bottle and the avocado models have associated animations and can be interacted with. There are three main buttons for interactions:
-Open Button - Opens the truck
-Close Button - Closes the truck
-Reset Button - Resets the state of the scene
+Open Button - Opens the truck;
+Close Button - Closes the truck;
+Reset Button - Resets the state of the scene;
 The number of clicks made on the models is tracked and displayed in the scene via an info label.
