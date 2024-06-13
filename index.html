@@ -1,0 +1,261 @@
+<html>
+  <head>
+    <!-- Importing the A-Frame library -->
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <!-- Start of A-Frame Scene -->
+    <a-scene>
+      <!-- Plane under the models -->
+      <a-plane
+        position="0 0 -4"
+        rotation="-90 0 0"
+        width="4"
+        height="4"
+        color="#7BC8A4"
+      ></a-plane>
+      <!-- Sky color -->
+      <a-sky color="#ECECEC"></a-sky>
+      <a-assets>
+        <!-- Defintion of Assets -->
+        <a-asset-item
+          id="closedTruck"
+          src="/Assets/Truck_closed.glb"
+        ></a-asset-item>
+        <a-asset-item
+          id="openedTruck"
+          src="/Assets/Truck_opened.glb"
+        ></a-asset-item>
+        <a-asset-item id="bottle" src="/Assets/WaterBottle.glb"></a-asset-item>
+        <a-asset-item id="avocado" src="/Assets/Avocado.glb"></a-asset-item>
+      </a-assets>
+
+      <!-- Entities of 3D-Models -->
+      <a-entity
+        id="closedTruckModel"
+        gltf-model="#closedTruck"
+        position="1.121 1.779 -3.6"
+        rotation="0 44.4 0"
+        visible="true"
+      ></a-entity>
+      <a-entity
+        id="openedTruckModel"
+        gltf-model="#openedTruck"
+        position="1.234 2.868 -3.4"
+        rotation="0 44.4 0"
+        visible="false"
+      ></a-entity>
+      <a-entity
+        id="bottleModel"
+        gltf-model="#bottle"
+        position="0.425 0.602 -2.818"
+        rotation="-51.5 149.2 -94.23"
+        visible="true"
+        class="clickable"
+      ></a-entity>
+      <a-entity
+        id="avocadoModel"
+        gltf-model="#avocado"
+        position="-1.32 0.7 -4.64"
+        rotation="-51.5 -61.6 -94.23"
+        scale="1.5 1.5 1.5"
+        visible="true"
+        class="clickable"
+      ></a-entity>
+
+      <!-- Entities of Controls -->
+      <a-entity
+        id="openButton"
+        geometry="primitive: plane; width: 0.5; height: 0.2"
+        material="color: blue"
+        position="0.657 1.477 -2.1123"
+        rotation="3.023 -45 -0.018"
+        text="value: Blende oeffnen; color: white; align: center; width: 1.5; height: 1.5"
+        visible="true"
+        class="clickable"
+      ></a-entity>
+
+      <a-entity
+        id="closeButton"
+        geometry="primitive: plane; width: 0.5; height: 0.2"
+        material="color: blue"
+        position="0 2.549 -2.88"
+        rotation="3.023 -45 -0.018"
+        text="value: Blende schliessen; color: white; align: center; width: 1.5; height: 1.5"
+        visible="false"
+        class="clickable"
+      >
+      </a-entity>
+      <a-entity
+        id="resetButton"
+        geometry="primitive: plane; width: 0.5; height: 0.2"
+        material="color: blue"
+        position="-1.9 1.86 -2.36"
+        rotation="3.02 56.3 -0.018"
+        text="value: Neustart; color: white; align: center; width: 1.5; height: 1.5"
+        visible="true"
+        class="clickable"
+      >
+      </a-entity>
+
+      <!-- Info label -->
+      <a-entity
+        id="infoLabel"
+        text="value:0 von 2 Objekten gefunden!; color: black; align: center"
+        position="-0.92 0.5 -3.217"
+        visible="false"
+      ></a-entity>
+
+      <!-- Right controller -->
+      <a-entity
+        id="right-hand"
+        laser-controls="hand: right"
+        raycaster="objects: .clickable"
+      ></a-entity>
+
+      <script>
+        var clickCount = 0; // Number of clicks
+
+        // Animate a given object to a target position and rotation
+        function animateObject(object, targetPosition, targetRotation) {
+          object.setAttribute("animation__position", {
+            property: "position",
+            to: targetPosition,
+            dur: 1000,
+            easing: "linear",
+            loop: false,
+          });
+
+          object.setAttribute("animation__rotation", {
+            property: "rotation",
+            to: targetRotation,
+            dur: 1000,
+            easing: "linear",
+            loop: false,
+          });
+        }
+
+        // Reset a given object to its original position and rotation
+        function resetObject(object, targetPosition, targetRotation) {
+          object.removeAttribute("animation__position");
+          object.removeAttribute("animation__rotation");
+          object.setAttribute("position", targetPosition);
+          object.setAttribute("rotation", targetRotation);
+        }
+
+        // Increase the click count and display it in the label
+        function increaseClickCount() {
+          clickCount += 1;
+          var infoLabel = document.querySelector("#infoLabel");
+              infoLabel.setAttribute(
+                "text",
+                "value",
+                clickCount + " von 2 Objekten gefunden!"
+              );
+        }
+
+        // Reset the click count and display it in the label
+        function resetClickCount() {
+          clickCount = 0;
+          var infoLabel = document.querySelector("#infoLabel");
+            infoLabel.setAttribute("visible", "false");
+              infoLabel.setAttribute(
+                "text",
+                "value",
+                clickCount + " von 2 Objekten gefunden!"
+              );
+        }
+
+        // Open the fire truck
+        function openVehicle() {
+          document.querySelector("#closeButton").setAttribute("visible", "true");
+          document.querySelector("#openedTruckModel").setAttribute("visible", "true");
+          document.querySelector("#openButton").setAttribute("visible", "false");
+          document.querySelector("#closedTruckModel").setAttribute("visible", "false");
+          document.querySelector("#infoLabel").setAttribute("visible", "true");
+          document.querySelector("#infoLabel").setAttribute(
+                  "text",
+                  "value",
+                  clickCount + " von 2 Objekten gefunden!"
+                );
+        }
+
+        // Close the fire truck
+        function closeVehicle() {
+          document.querySelector("#closeButton").setAttribute("visible", "false");
+          document.querySelector("#openedTruckModel").setAttribute("visible", "false");
+          document.querySelector("#openButton").setAttribute("visible", "true");
+          document.querySelector("#closedTruckModel").setAttribute("visible", "true");
+        }
+
+        // Register the listener for the open button
+        AFRAME.registerComponent("openbuttonlistener", {
+          init: function () {
+            var el = this.el;
+            el.addEventListener("click", function () {
+              openVehicle();
+            });
+          },
+        });
+
+        // Register the listener for the close button
+        AFRAME.registerComponent("closebuttonlistener", {
+          init: function () {
+            var el = this.el;
+            el.addEventListener("click", function () {
+              closeVehicle();
+            });
+          },
+        });
+
+        // Register the listener for the bottle
+        AFRAME.registerComponent("bottlelistener", {
+          init: function () {
+            var el = this.el;
+            el.addEventListener("click", function () {
+              var bottle = document.querySelector("#bottleModel");
+              animateObject(bottle, "-0.17 0.53 -2.76", "0 145 0");
+              increaseClickCount();
+            });
+          },
+        });
+
+        // Register the listener for the avocado
+        AFRAME.registerComponent("avocadolistener", {
+          init: function () {
+            var el = this.el;
+            el.addEventListener("click", function () {
+              var avocado = document.querySelector("#avocadoModel");
+              animateObject(avocado, "-0.42 0.42 -2.82", "-51.5 -13.2 -94.2");
+              increaseClickCount();
+            });
+          },
+        });
+
+        // Register the listener for the reset button
+        AFRAME.registerComponent("resetbuttonlistener", {
+          init: function () {
+            var el = this.el;
+            el.addEventListener("click", function () {
+              resetClickCount();
+              closeVehicle();
+
+              var bottle = document.querySelector("#bottleModel");
+              resetObject(bottle, "0.425 0.602 -2.818", "-51.5 149.2 -94.23");
+
+              var avocado = document.querySelector("#avocadoModel");
+              resetObject(avocado, "-1.32 0.7 -4.64", "-51.5 -61.6 -94.23");
+            });
+          },
+        });
+
+        // Add the listeners to each A-Frame-entity
+        document.querySelector("#openButton").setAttribute("openbuttonlistener", "");
+        document.querySelector("#closeButton").setAttribute("closebuttonlistener", "");
+        document.querySelector("#bottleModel").setAttribute("bottlelistener", "");
+        document.querySelector("#avocadoModel").setAttribute("avocadolistener", "");
+        document.querySelector("#resetButton").setAttribute("resetbuttonlistener", "");
+      </script>
+    </a-scene>
+  </body>
+</html>
